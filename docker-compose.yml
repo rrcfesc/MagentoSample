@@ -1,0 +1,31 @@
+version: '2'
+services:
+  web:
+      image: rrcfesc/dockerfilesmagento2:latest
+      expose:
+         - "9000"
+      ports:
+          - "80:80"
+          - "445:443"
+          - "8116:22"
+      volumes:
+          - ./src:/var/www/html
+          - ~/.ssh:/home/magento2/.ssh
+          - ./apache_vhost:/etc/apache2/sites-available/
+      environment:
+        PHP_XDEBUG_ENABLED: 1
+      links:
+          - mysql
+      container_name: magento2-web
+  mysql:
+      image: mysql:5.7
+      volumes:
+      - ./mysql/config:/etc/mysql/conf.d
+      - ./mysql/databasedata:/var/lib/mysql
+      ports:
+        - 3307:3306
+      environment:
+          - MYSQL_ROOT_PASSWORD=mysql
+          - MYSQL_DATABASE=magento2
+      container_name: magento2-db
+
